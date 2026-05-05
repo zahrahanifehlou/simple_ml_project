@@ -2,6 +2,7 @@ import optuna
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 from sklearn.datasets import load_iris
+from pathlib import Path
 import mlflow
 
 def objective(trial):
@@ -25,6 +26,10 @@ def objective(trial):
 
 
 def main():
+
+    mlruns_dir = (Path(__file__).resolve().parents[1] / "mlruns")
+    mlflow.set_tracking_uri(mlruns_dir.as_uri())
+    mlflow.set_experiment("simple-ml")
 
     with mlflow.start_run(run_name="optuna_tuning"):
         study = optuna.create_study(direction="maximize")

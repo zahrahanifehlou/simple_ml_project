@@ -3,10 +3,15 @@ from model import train_model, save_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_iris
+from pathlib import Path
 import mlflow
 import mlflow.sklearn
 
 def main():
+
+    mlruns_dir = (Path(__file__).resolve().parents[1] / "mlruns")
+    mlflow.set_tracking_uri(mlruns_dir.as_uri())
+    mlflow.set_experiment("simple-ml")
 
     iris = load_iris(as_frame=True)
     data = iris.frame

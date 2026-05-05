@@ -66,6 +66,11 @@ Run the training script first (it creates an MLflow run):
 python app/train.py
 ```
 
+Notes:
+
+- Runs are logged to a local `./mlruns` folder.
+- The experiment name is `simple-ml`.
+
 To view runs locally, start the MLflow UI from the repository root:
 
 ```bash
