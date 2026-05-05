@@ -22,16 +22,13 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run training
-      working-directory: ./simple_ml_project
       run: |
         python app/train.py
 
     - name: Run prediction
-      working-directory: ./simple_ml_project
       run: |
         python app/predict.py
 
     - name: Build Docker image
-      working-directory: ./simple_ml_project
       run: |
         docker build -t simple-ml-app .
