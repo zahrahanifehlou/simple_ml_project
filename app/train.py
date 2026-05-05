@@ -2,6 +2,7 @@ import pandas as pd
 from model import train_model, save_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+import os
 
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
