@@ -4,7 +4,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 def main():
-    data = pd.read_csv("data/iris.csv")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(base_dir, "..", "data", "iris.csv")
+
+    data = pd.read_csv(data_path)
 
     X = data.drop("Species", axis=1)
     y = data["Species"]
