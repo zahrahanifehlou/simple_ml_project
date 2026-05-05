@@ -1,8 +1,8 @@
 from sklearn.linear_model import LogisticRegression
 import joblib
 
-def train_model(X, y):
-    model = LogisticRegression(max_iter=200)
+def train_model(X, y, C=1.0):
+    model = LogisticRegression(C=C, max_iter=200)
     model.fit(X, y)
     return model
 

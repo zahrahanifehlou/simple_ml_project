@@ -30,6 +30,11 @@ jobs:
       working-directory: .
       run: |
         python app/predict.py
+    
+    - name: Run tuning
+      working-directory: .
+      run: |
+        python app/tune.py
 
     - name: Build Docker image
       working-directory: .

@@ -4,7 +4,8 @@ A minimal machine learning example using the Iris dataset and scikit-learn.
 
 - Trains a `LogisticRegression` classifier on Iris.
 - Saves the trained model to `model.pkl`.
-- Includes a small prediction script and a CI workflow.
+- Tracks experiments with MLflow (metrics + model artifacts).
+- Includes a small prediction script, an Optuna tuning script, and a CI workflow.
 
 ## Project structure
 
@@ -13,10 +14,14 @@ A minimal machine learning example using the Iris dataset and scikit-learn.
   - Splits into train/test
   - Trains the model
   - Prints accuracy
+  - Logs accuracy to MLflow
+  - Logs the trained model to MLflow as an artifact
   - Saves the model to `model.pkl`
 - `app/predict.py`
   - Loads `model.pkl`
   - Runs a sample prediction
+- `app/tune.py`
+  - Hyperparameter tuning with Optuna (e.g. `LogisticRegression` `C`, `solver`)
 - `app/model.py`
   - `train_model`, `save_model`, `load_model`
 - `data/Iris.csv`
@@ -43,7 +48,44 @@ python app/train.py
 This will:
 
 - Print the model accuracy
+- Log the accuracy metric to MLflow
+- Log the trained model to MLflow as an artifact
 - Write the trained model to `model.pkl`
+
+## MLflow
+
+MLflow is used for:
+
+- **Tracking experiments** (e.g. accuracy)
+- **Logging model artifacts** (the trained sklearn model)
+
+Run the training script first (it creates an MLflow run):
+
+```bash
+python app/train.py
+```
+
+To view runs locally, start the MLflow UI from the repository root:
+
+```bash
+mlflow ui
+```
+
+Then open the shown URL (by default `http://127.0.0.1:5000`).
+
+## Optuna hyperparameter tuning
+
+Optuna is used for:
+
+- **Hyperparameter tuning** (e.g., `LogisticRegression` `C`, `solver`, etc.)
+
+Run:
+
+```bash
+python app/tune.py
+```
+
+This will print the best parameters and the best cross-validation score found.
 
 ## Run a prediction
 
