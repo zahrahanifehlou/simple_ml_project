@@ -1,7 +1,6 @@
-pandas
-scikit-learn
-joblib
-numpy
 mlflow
-fastapi
-uvicorn
+optuna
+scikit-learn
+pandas
+numpy
+joblib
