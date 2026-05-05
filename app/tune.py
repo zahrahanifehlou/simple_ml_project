@@ -1,42 +1,40 @@
 import optuna
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
 from sklearn.datasets import load_iris
-from sklearn.metrics import accuracy_score
-
-from mlflow_utils import start_run, log_params, log_metrics
+import mlflow
 
 def objective(trial):
 
-    iris = load_iris(as_frame=True)
-    X = iris.data
-    y = iris.target
+    iris = load_iris()
+    X, y = iris.data, iris.target
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
-    C = trial.suggest_float("C", 0.01, 10.0, log=True)
+    C = trial.suggest_loguniform("C", 1e-3, 1e2)
     solver = trial.suggest_categorical("solver", ["lbfgs", "liblinear"])
 
-    model = LogisticRegression(C=C, solver=solver, max_iter=300)
-    model.fit(X_train, y_train)
+    max_iter = 200
 
-    preds = model.predict(X_test)
-    acc = accuracy_score(y_test, preds)
+    with mlflow.start_run(run_name=f"trial_{trial.number}", nested=True):
+        mlflow.log_params({"C": C, "solver": solver, "max_iter": max_iter, "model": "LogisticRegression"})
 
-    log_params({"C": C, "solver": solver})
-    log_metrics({"accuracy": acc})
+        model = LogisticRegression(C=C, solver=solver, max_iter=max_iter)
+        score = cross_val_score(model, X, y, cv=3).mean()
 
-    return acc
+        mlflow.log_metric("cv_score", float(score))
+        return score
 
 
 def main():
 
-    with start_run("optuna_iris_tuning"):
+    with mlflow.start_run(run_name="optuna_tuning"):
         study = optuna.create_study(direction="maximize")
-        study.optimize(objective, n_trials=10)
+        study.optimize(objective, n_trials=20)
+
+        mlflow.log_params({f"best_{k}": v for k, v in study.best_params.items()})
+        mlflow.log_metric("best_cv_score", float(study.best_value))
 
         print("Best params:", study.best_params)
-        print("Best accuracy:", study.best_value)
+        print("Best score:", study.best_value)
 
 
 if __name__ == "__main__":

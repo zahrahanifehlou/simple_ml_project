@@ -57,6 +57,7 @@ This will:
 MLflow is used for:
 
 - **Tracking experiments** (e.g. accuracy)
+- **Tracking parameters** (e.g. `C`, `solver`, `max_iter`)
 - **Logging model artifacts** (the trained sklearn model)
 
 Run the training script first (it creates an MLflow run):
@@ -78,6 +79,12 @@ Then open the shown URL (by default `http://127.0.0.1:5000`).
 Optuna is used for:
 
 - **Hyperparameter tuning** (e.g., `LogisticRegression` `C`, `solver`, etc.)
+
+The tuning script also logs each trial to MLflow (nested runs), including:
+
+- **Trial params** (`C`, `solver`, `max_iter`)
+- **Trial metric** (`cv_score`)
+- **Best summary** (`best_*` params + `best_cv_score`)
 
 Run:
 

@@ -3,8 +3,8 @@ from model import train_model, save_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.datasets import load_iris
-
-from mlflow_utils import start_run, log_params, log_metrics, log_model
+import mlflow
+import mlflow.sklearn
 
 def main():
 
@@ -17,18 +17,23 @@ def main():
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    with start_run("baseline_model"):
+    with mlflow.start_run(run_name="baseline_model"):
 
-        model = train_model(X_train, y_train)
+        C = 1.0
+        solver = "lbfgs"
+        max_iter = 200
+
+        mlflow.log_params({"C": C, "solver": solver, "max_iter": max_iter, "model": "LogisticRegression"})
+
+        model = train_model(X_train, y_train, C=C, solver=solver, max_iter=max_iter)
 
         preds = model.predict(X_test)
         acc = accuracy_score(y_test, preds)
 
         print("Accuracy:", acc)
 
-        log_params({"model": "LogisticRegression"})
-        log_metrics({"accuracy": acc})
-        log_model(model)
+        mlflow.log_metrics({"accuracy": acc})
+        mlflow.sklearn.log_model(model, "model")
 
         save_model(model)
 
