@@ -2,10 +2,15 @@ import pandas as pd
 from model import train_model, save_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-
+from sklearn.datasets import load_iris
 def main():
     
-    data = pd.read_csv("data/iris.csv")
+
+
+    iris = load_iris(as_frame=True)
+    data = iris.frame
+    data["Species"] = iris.target
+
 
     X = data.drop("Species", axis=1)
     y = data["Species"]
